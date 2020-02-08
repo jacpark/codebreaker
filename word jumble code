@@ -1,0 +1,130 @@
+#include <iostream> 
+#include <string> 
+#include <cstdlib> 
+#include <ctime> 
+
+
+using namespace std;
+
+
+int main()
+
+{
+	//play again variable
+	bool  play_again = true;
+	//variable to track number of rounds per game
+	int round = 0;
+	// variable to track players score
+	int score = 0;
+	//play again loop
+	while (play_again && round < 3)
+	{
+		//List of words and hints
+		enum fields { WORD, HINT, NUM_FIELDS };
+		const int NUM_WORDS = 10;
+		const string WORDS[NUM_WORDS][NUM_FIELDS] =
+		{
+		{"blacksite", "A place that doesnt exsist"},
+		{"badge", "A shield that proves authority"},
+		{"cypher", "A method of coding"},
+		{"intellegence", "what this organization is all about"},
+		{"witch", "A practitioner of magic"},
+		{"alien", "A being not from earth"},
+		{"classified", "A secret"},
+		{"investigate", "To research something"},
+		{"intel", "Information on subject"},
+		{"raid", "A surprise assult"}
+		};
+
+		//Dificulty levels for scoring system
+		//enum difficulty { EASY, MEDIUM, HARD, NUM_DIFF_LEVELS };
+		
+
+		//Pick a random word from my array
+		srand(static_cast<unsigned int>(time(0)));
+		int choice = (rand() % NUM_WORDS);
+		string theWord = WORDS[choice][WORD];
+		string theHint = WORDS[choice][HINT];
+
+		//Jumble the word
+		string jumble = theWord;
+		int length = jumble.size();
+		for (int i = 0; i < length; ++i)
+		{
+			int index1 = (rand() % length);
+			int index2 = (rand() % length);
+			char temp = jumble[index1];
+			jumble[index1] = jumble[index2];
+			jumble[index2] = temp;
+		}
+		//only display the rules at the begining of the game
+		if (round < 1) {
+			//Welcome the player and tell them how to play
+			cout << "\t\t\tWelcome to word jumble!\n\n";
+			cout << "Unscramble the letter to make a word.\n";
+			//cout << "There are" << NUM_DIFF_LEVELS << " difficulty levels.\n";
+			cout << "Enter 'hint' for a hint.\n";
+			cout << "Enter 'quit' to quit the game.\n\n";
+		}
+		cout << "The jumble is " << jumble;
+
+
+		//Get the players guess
+		string guess;
+		cout << "\n\nYour guess: ";
+		cin >> guess;
+
+
+		//based on players guess display the hint or weather they got it right or wrong
+		while ((guess != theWord) && (guess != "quit"))
+		{
+			if (guess == "hint")
+			{
+				cout << theHint;
+			}
+			else
+			{
+				cout << "Sorry, that's not it.";
+			}
+			cout << "\n\nYour guess: ";
+			cin >> guess;
+		}
+		//Player guessed correctly and increase thier score
+		if (guess == theWord)
+		{
+			cout << "\nThat's it! You guessed it!\n";
+			score = score + theWord.length();
+			cout << "You scored " << theWord.length() << " points\n";
+			cout << "Your score is " << score << " points\n\n";
+
+
+			//move to the next round
+			++round;
+			//end game, display score and ask if they would like to play again
+			if (round == 3)
+			{
+				cout << "Your total score is " << score;
+				cout << "\nWould you like to play again? type 'y' or 'n'\n";
+				char answer;
+				cin >> answer;
+				//say goodbye
+				if (answer != 'y')
+				{
+					play_again = false;
+					cout << "\nThanks for playing.\n";
+				}
+				//reset the game
+				else
+				{
+					round = 0;
+					score = 0;
+				}
+			}
+
+		}
+		//Allow the user to quit at anytime
+		if (guess == "quit") { return 0; }
+	}
+	return 0;
+
+}
